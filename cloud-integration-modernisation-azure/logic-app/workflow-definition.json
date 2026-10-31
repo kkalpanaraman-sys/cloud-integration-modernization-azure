@@ -1,0 +1,47 @@
+{
+  "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+  "contentVersion": "1.0.0.0",
+  "triggers": {
+    "When_an_HTTP_request_is_received": {
+      "type": "Request",
+      "kind": "Http",
+      "inputs": {
+        "schema": {
+          "type": "object",
+          "required": ["orderId", "customerId", "amount", "currency"],
+          "properties": {
+            "orderId": {"type":"string"},
+            "customerId": {"type":"string"},
+            "amount": {"type":"number"},
+            "currency": {"type":"string"}
+          }
+        }
+      }
+    }
+  },
+  "actions": {
+    "Create_correlation_id": {"type":"Compose","inputs":"@guid()","runAfter":{}},
+    "Prepare_order_message": {
+      "type":"Compose",
+      "inputs":{
+        "orderId":"@{triggerBody()?['orderId']}",
+        "customerId":"@{triggerBody()?['customerId']}",
+        "amount":"@{triggerBody()?['amount']}",
+        "currency":"@{triggerBody()?['currency']}",
+        "correlationId":"@{outputs('Create_correlation_id')}"
+      },
+      "runAfter":{"Create_correlation_id":["Succeeded"]}
+    },
+    "TODO_configure_Service_Bus_connector_in_portal": {
+      "type":"Compose",
+      "inputs":"Starter placeholder. Replace with Service Bus connector action sending outputs('Prepare_order_message') to queue 'orders'. Connector connection metadata is environment-specific; do not embed credentials here.",
+      "runAfter":{"Prepare_order_message":["Succeeded"]}
+    },
+    "Return_accepted": {
+      "type":"Response","kind":"Http",
+      "inputs":{"statusCode":202,"body":{"status":"ACCEPTED_FOR_ORCHESTRATION","orderId":"@{triggerBody()?['orderId']}","correlationId":"@{outputs('Create_correlation_id')}"}},
+      "runAfter":{"TODO_configure_Service_Bus_connector_in_portal":["Succeeded"]}
+    }
+  },
+  "outputs":{}
+}

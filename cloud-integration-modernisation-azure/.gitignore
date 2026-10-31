@@ -1,0 +1,9 @@
+target/
+*.class
+*.log
+.idea/
+.vscode/
+.DS_Store
+azure-function/local.settings.json
+.azure/
+*.publishsettings
