@@ -10,7 +10,7 @@ Portfolio starter: Spring Boot Order API → Azure Logic Apps → Azure Service 
 - `infra/main.bicep`: creates a Service Bus namespace and `orders` queue
 - `docs/architecture.md`: architecture and design notes
 
-This is a learning starter, not production-ready. The Logic Apps JSON includes a clearly marked placeholder for the Service Bus connector action because connector connection metadata is subscription/environment-specific.
+
 
 ## Run locally
 Requires Java 21 and Maven 3.9+.
@@ -58,4 +58,3 @@ az group delete --name rg-integration-poc --yes --no-wait
 - Demonstrated message validation, asynchronous processing, correlation IDs, and downstream REST delivery.
 - Documented retries/dead-letter handling, secure configuration, and observability considerations.
 
-Only claim components you have actually configured and tested. If not implemented yet, describe it as a design/learning project.
